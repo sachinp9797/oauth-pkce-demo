@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OAuth Sample App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🔐 Xola OAuth Sample App</h1>
+      <p>This is a sample OAuth2 client demonstrating the authorization code flow with PKCE.</p>
+
+      <h2>What does this app do?</h2>
+      <ul>
+        <li>Initiates an OAuth authorization request to Xola</li>
+        <li>Generates a PKCE challenge (code_challenge + code_verifier)</li>
+        <li>Handles the redirect callback from Xola</li>
+        <li>Exchanges the authorization code for an access token</li>
+        <li>Fetches and displays authenticated user information</li>
+      </ul>
+
+      <h2>Get Started</h2>
+      <p>Click the button below to start the OAuth authorization flow:</p>
+      <a href="/authorize" class="btn btn-primary">Login with Xola</a>
+
+      <div id="error-message" style="display:none;" class="alert alert-danger"></div>
+    </div>
+
+    <div class="card">
+      <h3>Prerequisites</h3>
+      <p>Before using this app, you need to:</p>
+      <ol>
+        <li>Have a running Xola instance with OAuth endpoints</li>
+        <li>Register an OAuth client:
+          <pre><code>curl -X POST http://localhost/api/oauth/register \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "client_name": "Sample App",
+    "redirect_uris": ["http://localhost:8080/callback"],
+    "grant_types": ["authorization_code", "refresh_token"]
+  }'</code></pre>
+        </li>
+        <li>Copy the <code>client_id</code> and <code>client_secret</code> to your <code>.env</code> file</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // Show error message if present in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    if (error) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = 'Error: ' + error;
+      errorDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

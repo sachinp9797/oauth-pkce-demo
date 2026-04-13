@@ -1,0 +1,22 @@
+{
+  "name": "xola-oauth-sample-app",
+  "version": "1.0.0",
+  "description": "OAuth2 sample client for testing Xola's OAuth server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["oauth2", "pkce", "xola"],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.2",
+    "express-session": "^1.17.3",
+    "dotenv": "^16.3.1"
+  }
+}
