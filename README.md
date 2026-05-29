@@ -36,6 +36,7 @@ curl -X POST http://localhost/api/oauth/register \
 The response will contain your `client_id` and `client_secret`. Save these.
 
 **Example Response:**
+
 ```json
 {
   "client_id": "a1b2c3d4e5f6g7h8",
@@ -64,7 +65,6 @@ Edit `.env` with your client credentials:
 
 ```env
 OAUTH_CLIENT_ID=a1b2c3d4e5f6g7h8
-OAUTH_CLIENT_SECRET=i9j8k7l6m5n4o3p2q1r0s9t8u7v6w5x4y3z2a1b
 SESSION_SECRET=mysupersecretkey123456789
 XOLA_URL=http://localhost
 PORT=8080
@@ -86,6 +86,50 @@ The app will start on `http://localhost:8080`.
 4. Log in with your seller account credentials
 5. You'll be automatically redirected back to the sample app with an access token
 6. The dashboard will display your user information
+
+## Deploy on GitHub Pages
+
+GitHub Pages cannot run the Express server, so this repo includes a static browser-mode flow for Pages.
+
+1. Set OAuth env vars (from `.env` or shell):
+   - `OAUTH_CLIENT_ID`
+   - `XOLA_OAUTH_AUTHORIZE_URL`
+   - `XOLA_OAUTH_TOKEN_URL`
+   - `XOLA_OAUTH_USERINFO_URL`
+2. Set the public URL for the Pages site:
+   - `PUBLIC_BASE_URL=https://<username>.github.io/<repo>`
+3. Build static output:
+
+```bash
+npm run build:gh-pages
+```
+
+4. Deploy to the `gh-pages` branch:
+
+```bash
+npm run deploy:gh-pages
+```
+
+5. In your Xola client settings, register redirect URI:
+   - `https://<username>.github.io/<repo>/`
+
+For GitHub Pages mode, leave `NGROK_URL` empty.
+
+## Deploy on Vercel
+
+1. Push this repo to GitHub.
+2. In Vercel, create a new project from the repo.
+3. Add environment variables in Vercel Project Settings:
+   - `OAUTH_CLIENT_ID`
+   - `REDIRECT_URI` (set to `https://<your-vercel-domain>/callback`)
+   - `SESSION_SECRET`
+   - `XOLA_URL`
+   - `XOLA_OAUTH_AUTHORIZE_URL`
+   - `XOLA_OAUTH_TOKEN_URL`
+   - `XOLA_OAUTH_USERINFO_URL`
+4. Redeploy after saving env vars.
+
+For Vercel testing, keep `NGROK_URL` empty. The app runs in server mode and uses `OAUTH_CLIENT_ID`.
 
 ## How It Works
 
@@ -124,13 +168,13 @@ The app will start on `http://localhost:8080`.
 
 ### Routes
 
-| Route | Method | Purpose |
-|-------|--------|---------|
-| `/` | GET | Home page with login button |
-| `/authorize` | GET | Initiate OAuth authorization (generates PKCE challenge) |
-| `/callback` | GET | Handle redirect from Xola (exchange code for token) |
-| `/dashboard` | GET | Display authenticated user info |
-| `/logout` | GET | Clear session and return to home |
+| Route        | Method | Purpose                                                 |
+| ------------ | ------ | ------------------------------------------------------- |
+| `/`          | GET    | Home page with login button                             |
+| `/authorize` | GET    | Initiate OAuth authorization (generates PKCE challenge) |
+| `/callback`  | GET    | Handle redirect from Xola (exchange code for token)     |
+| `/dashboard` | GET    | Display authenticated user info                         |
+| `/logout`    | GET    | Clear session and return to home                        |
 
 ### Session Data
 
@@ -147,6 +191,7 @@ The app stores the following in server-side session:
 ### PKCE (Proof Key for Code Exchange)
 
 Prevents authorization code interception attacks:
+
 - App generates a random `code_verifier` (64 chars)
 - Computes `code_challenge = base64url(sha256(code_verifier))`
 - Sends `code_challenge` to authorization endpoint
@@ -155,6 +200,7 @@ Prevents authorization code interception attacks:
 ### CSRF Protection
 
 Prevents cross-site request forgery:
+
 - App generates random `state` token
 - Sends `state` to authorization endpoint
 - Validates `state` in callback before processing
@@ -168,22 +214,26 @@ Prevents cross-site request forgery:
 ## Testing Scenarios
 
 ### Successful Login
+
 1. Have a valid Xola seller account
 2. Use correct email and password at login page
 3. Authorization auto-approved
 4. Dashboard shows user info
 
 ### Invalid Credentials
+
 1. Enter wrong email or password at Xola login
 2. Xola login page shows error
 3. Click "Back" or "Login again" to retry
 
 ### Token Validation
+
 1. After successful login, dashboard calls `/api/oauth/userinfo`
 2. If token is valid, userinfo is displayed
 3. If token is expired/invalid, redirect to home with error
 
 ### PKCE Verification
+
 1. Check Network tab in browser DevTools
 2. First request to `/authorize` generates PKCE
 3. Callback to Xola includes `code_challenge` in URL
@@ -191,22 +241,26 @@ Prevents cross-site request forgery:
 
 ## Troubleshooting
 
-### "OAUTH_CLIENT_ID and OAUTH_CLIENT_SECRET must be set"
+### "OAUTH_CLIENT_ID must be set"
+
 - Make sure you've created `.env` from `.env.example`
-- Verify both variables are populated
+- Verify the variable is populated
 - Restart the server after changes
 
 ### "State mismatch. Possible CSRF attack."
+
 - Session cookie may have been cleared
 - Try logging out and logging back in
 - Check browser DevTools for session cookie
 
 ### "Token exchange failed"
+
 - Check that Xola's `/oauth2/token` endpoint is accessible
 - Verify client credentials in `.env` are correct
 - Check Xola's logs for more details
 
 ### "Failed to fetch user info"
+
 - Token may be expired
 - Xola's `/api/oauth/userinfo` endpoint may be down
 - Check browser DevTools Network tab for exact error
