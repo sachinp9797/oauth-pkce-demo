@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OAuth Sample App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>🔐 Xola OAuth Sample App</h1>
+        <p>
+          This is a sample OAuth2 client demonstrating the authorization code
+          flow with PKCE.
+        </p>
+
+        <h2>What does this app do?</h2>
+        <ul>
+          <li>Initiates an OAuth authorization request to Xola</li>
+          <li>Generates PKCE challenge values in-browser</li>
+          <li>Handles the redirect callback in the browser</li>
+          <li>Exchanges authorization code for an access token</li>
+          <li>Fetches and displays authenticated user information</li>
+        </ul>
+
+        <h2>Get Started</h2>
+        <p>Click the button below to start the OAuth authorization flow:</p>
+        <button id="login-button" class="btn btn-primary">Login with Xola</button>
+
+        <p id="mode-label" style="margin-top: 12px"></p>
+
+        <div id="status-message" style="display: none" class="alert"></div>
+        <div
+          id="error-message"
+          style="display: none"
+          class="alert alert-danger"
+        ></div>
+      </div>
+
+      <div id="dashboard-card" class="card" style="display: none">
+        <h2>User Information</h2>
+        <dl>
+          <dt>User ID</dt>
+          <dd id="user-id">-</dd>
+          <dt>Email</dt>
+          <dd id="user-email">-</dd>
+          <dt>Name</dt>
+          <dd id="user-name">-</dd>
+        </dl>
+
+        <h2>Token Details</h2>
+        <dl>
+          <dt>Access Token</dt>
+          <dd id="access-token">-</dd>
+          <dt>Expires In</dt>
+          <dd id="expires-in">-</dd>
+        </dl>
+
+        <button id="logout-button" class="btn btn-danger">Logout</button>
+      </div>
+    </div>
+    <script src="runtime-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
