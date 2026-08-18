@@ -30,10 +30,11 @@ const config: Config = {
       ? `${ngrokUrl}/.well-known/oauth-client-metadata`
       : process.env.OAUTH_CLIENT_ID,
     authorizeUrl:
-      process.env.OAUTH_AUTHORIZE_URL || "http://localhost/api/oauth/login",
-    tokenUrl: process.env.OAUTH_TOKEN_URL || "http://localhost/api/token",
+      process.env.OAUTH_AUTHORIZE_URL || "https://staging.xola.com/api/authorize",
+    tokenUrl:
+      process.env.OAUTH_TOKEN_URL || "https://staging.xola.com/api/token",
     userInfoUrl:
-      process.env.OAUTH_USERINFO_URL || "http://localhost/api/users/me",
+      process.env.OAUTH_USERINFO_URL || "https://staging.xola.com/api/users/me",
   },
 
   cimd: {
