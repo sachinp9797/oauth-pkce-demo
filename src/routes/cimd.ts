@@ -1,11 +1,12 @@
-const express = require("express");
-const config = require("../config");
+import { Router, Request, Response } from "express";
+import config from "../config";
 
-const router = express.Router();
+const router = Router();
 
-router.get("/.well-known/oauth-client-metadata", (req, res) => {
+router.get("/.well-known/oauth-client-metadata", (req: Request, res: Response) => {
   if (!config.cimd.enabled) {
-    return res.status(404).json({ error: "CIMD not enabled. Set NGROK_URL." });
+    res.status(404).json({ error: "CIMD not enabled. Set NGROK_URL." });
+    return;
   }
 
   res.json({
@@ -19,4 +20,4 @@ router.get("/.well-known/oauth-client-metadata", (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

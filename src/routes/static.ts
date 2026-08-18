@@ -1,9 +1,9 @@
-const express = require("express");
-const config = require("../config");
+import { Router, Request, Response } from "express";
+import config from "../config";
 
-const router = express.Router();
+const router = Router();
 
-router.get("/runtime-config.js", (req, res) => {
+router.get("/runtime-config.js", (req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/javascript");
   res.send(
     `window.__APP_CONFIG__ = ${JSON.stringify({
@@ -16,4 +16,4 @@ router.get("/runtime-config.js", (req, res) => {
   );
 });
 
-module.exports = router;
+export default router;

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "none",
+    "ignoreDeprecations": "6.0",
+    "lib": ["ES2019", "DOM", "DOM.Iterable"],
+    "outDir": "public/js",
+    "rootDir": "public/ts",
+    "strict": false,
+    "skipLibCheck": true,
+    "noEmitOnError": true
+  },
+  "include": ["public/ts/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,8 +1,12 @@
-const loginButton = document.getElementById("login-button");
-const logoutButton = document.getElementById("logout-button");
-const modeLabel = document.getElementById("mode-label");
+declare interface Window {
+  __APP_CONFIG__: AppConfig | null;
+}
 
-async function restoreSession(appConfig) {
+const loginButton = document.getElementById("login-button") as HTMLButtonElement;
+const logoutButton = document.getElementById("logout-button") as HTMLButtonElement;
+const modeLabel = document.getElementById("mode-label") as HTMLElement;
+
+async function restoreSession(appConfig: AppConfig): Promise<void> {
   const accessToken = sessionStorage.getItem(STORAGE_KEYS.accessToken);
   if (!accessToken) return;
 
@@ -13,10 +17,10 @@ async function restoreSession(appConfig) {
   clearStatus();
 }
 
-async function initStaticMode(appConfig) {
+async function initStaticMode(appConfig: AppConfig): Promise<void> {
   modeLabel.textContent = "Running in static mode (GitHub Pages compatible).";
   loginButton.addEventListener("click", () => {
-    beginAuthorization(appConfig).catch((err) => showError(err.message));
+    beginAuthorization(appConfig).catch((err: Error) => showError(err.message));
   });
   logoutButton.addEventListener("click", () => {
     clearSession();
@@ -28,7 +32,7 @@ async function initStaticMode(appConfig) {
   await restoreSession(appConfig);
 }
 
-function initServerMode() {
+function initServerMode(): void {
   modeLabel.textContent = "Running in server mode (Express backend).";
   loginButton.addEventListener("click", () => {
     window.location.assign("/authorize");
@@ -56,6 +60,6 @@ function initServerMode() {
     await initStaticMode(appConfig);
   } catch (err) {
     clearStatus();
-    showError(err.message || String(err));
+    showError((err as Error).message || String(err));
   }
 })();

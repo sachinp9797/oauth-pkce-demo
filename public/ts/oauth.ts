@@ -1,4 +1,23 @@
-function getRedirectUri(appConfig) {
+interface AppConfig {
+  clientId: string;
+  authorizeUrl: string;
+  tokenUrl: string;
+  userInfoUrl: string;
+  redirectUri?: string;
+}
+
+interface TokenResponse {
+  access_token: string;
+  expires_in?: number;
+}
+
+interface UserInfo {
+  id?: string;
+  email?: string;
+  name?: string;
+}
+
+function getRedirectUri(appConfig: AppConfig): string {
   if (appConfig.redirectUri) return appConfig.redirectUri;
   const url = new URL(window.location.href);
   url.search = "";
@@ -7,7 +26,11 @@ function getRedirectUri(appConfig) {
   return url.toString();
 }
 
-async function requestToken(appConfig, code, codeVerifier) {
+async function requestToken(
+  appConfig: AppConfig,
+  code: string,
+  codeVerifier: string,
+): Promise<TokenResponse> {
   const payload = new URLSearchParams({
     grant_type: "authorization_code",
     code,
@@ -30,7 +53,10 @@ async function requestToken(appConfig, code, codeVerifier) {
   return res.json();
 }
 
-async function requestUserInfo(appConfig, accessToken) {
+async function requestUserInfo(
+  appConfig: AppConfig,
+  accessToken: string,
+): Promise<UserInfo> {
   const res = await fetch(appConfig.userInfoUrl, {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
@@ -43,7 +69,7 @@ async function requestUserInfo(appConfig, accessToken) {
   return res.json();
 }
 
-async function beginAuthorization(appConfig) {
+async function beginAuthorization(appConfig: AppConfig): Promise<void> {
   const codeVerifier = randomString(64);
   const codeChallenge = await generateCodeChallenge(codeVerifier);
   const state = randomString(64);
@@ -62,7 +88,7 @@ async function beginAuthorization(appConfig) {
   window.location.assign(authorizeUrl.toString());
 }
 
-async function handleRedirect(appConfig) {
+async function handleRedirect(appConfig: AppConfig): Promise<void> {
   const params = new URLSearchParams(window.location.search);
   const authError = params.get("error");
   if (authError) throw new Error(authError);

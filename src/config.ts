@@ -1,9 +1,26 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
 const cimdMode = !!process.env.NGROK_URL;
 const ngrokUrl = (process.env.NGROK_URL || "").replace(/\/$/, "");
 
-const config = {
+export interface Config {
+  port: number | string;
+  sessionSecret: string;
+  redirectUri: string;
+  oauth: {
+    clientId: string | undefined;
+    authorizeUrl: string;
+    tokenUrl: string;
+    userInfoUrl: string;
+  };
+  cimd: {
+    enabled: boolean;
+    metadataUrl: string | null;
+  };
+}
+
+const config: Config = {
   port: process.env.PORT || 8080,
   sessionSecret: process.env.SESSION_SECRET || "dev-secret-change-in-prod",
   redirectUri: process.env.REDIRECT_URI || "http://localhost:8080/callback",
@@ -34,4 +51,4 @@ if (!cimdMode && !config.oauth.clientId) {
   process.exit(1);
 }
 
-module.exports = config;
+export default config;
